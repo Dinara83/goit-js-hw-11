@@ -8,22 +8,23 @@ import { galleryCard } from './js/galleryCard.js';
 
 refs.searchForm.addEventListener('submit', searchForm);
 refs.loadMoreBtn.addEventListener('click', clickLoadMore);
-
+const simpleLightBox = new SimpleLightbox('.gallery a').refresh();
 const fetchApiService = new FetchApiService();
-const gallery = new SimpleLightbox('.gallery a', {
-  captionDelay: 250,
-  overlayOpacity: 0.8,
-  closeText: 'x',
-  scrollZoom: false,
-});
+// const gallery = new SimpleLightbox('.gallery a', {
+//   captionDelay: 250,
+//   overlayOpacity: 0.8,
+//   closeText: 'x',
+//   scrollZoom: false,
+// });
 
-gallery.refresh();
+// gallery.refresh();
 
-async function searchForm(e) {
+async function searchForm(element) {
   try {
-    e.preventDefault();
+    element.preventDefault();
 
-    fetchApiService.query = e.currentTarget.elements.searchQuery.value.trim();
+    fetchApiService.query =
+      element.currentTarget.elements.searchQuery.value.trim();
 
     if (fetchApiService.query === '') {
       Notiflix.Notify.failure(
@@ -32,30 +33,32 @@ async function searchForm(e) {
     }
 
     fetchApiService.resetPage();
-    await fetchApiService.fetchCard().then(hits => {
-      clearGalleryCard();
-      renderGalleryCard(hits);
-    });
+
+    const data = await fetchApiService.fetchCard();
+    console.log(data);
+    clearGalleryCard();
+    renderGalleryCard(cards);
   } catch (error) {
     console.log(error);
   }
-  //   .finally(() => form.reset());
 }
 
 async function clickLoadMore() {
   try {
-    await fetchApiService.fetchCard().then(renderGalleryCard);
+    fetchApiService.incrementPage();
+    await fetchApiService.fetchCard();
+    renderGalleryCard(cards);
   } catch (error) {
     console.log(error);
   }
 }
 
-function renderGalleryCard(hits) {
-  refs.galleryList.insertAdjacentHTML('beforeend', galleryCard(hits));
+function renderGalleryCard(cards) {
+  //   refs.galleryList.insertAdjacentHTML('beforeend', galleryCard(hits));
+  const markup = cards.map(galleryCard).join('');
+  return refs.galleryList.insertAdjacentHTML('beforeend', markup);
 }
 
 function clearGalleryCard() {
   refs.galleryList.innerHTML = '';
 }
-
-// function onFetchError(error) {}

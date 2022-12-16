@@ -1,23 +1,26 @@
 const axios = require('axios').default;
 
-const BASE_URL = `https://pixabay.com/api`;
-const URL_KEY = `31934563-bfdfc3e562fca017f9814bb5d`;
-const URL = `image_type=photo&orientation=horizontal&safesearch=true`;
+const BASE_URL = 'https://pixabay.com/api';
+const URL_KEY = '31934563-bfdfc3e562fca017f9814bb5d';
+const URL = 'image_type=photo&orientation=horizontal&safesearch=true';
 
 export default class FetchApiService {
   constructor() {
     this.searchQuery = '';
     this.page = 1;
+    this.per_page = 40;
   }
   async fetchCard() {
     try {
-      const { data } = await axios.get(
-        `${BASE_URL}/?key=${URL_KEY}&q=${this.formSearchQuery}&per_page=40&page=${this.page}&${URL}`
+      const response = await axios.get(
+        `${BASE_URL}/?key=${URL_KEY}&q=${this.formSearchQuery}&per_page=${this.per_page}&page=${this.page}&${URL}`
       );
+      const data = await response.data;
+      console.log(data);
       this.incrementPage();
       return data;
-    } catch {
-      throw new Error(response.status);
+    } catch (error) {
+      console.error(error);
     }
   }
 
