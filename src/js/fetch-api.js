@@ -11,9 +11,14 @@ export default class FetchApiService {
     this.per_page = 40;
   }
   async fetchCard() {
-    const { data } = await axios.get(
+    const response = await axios.get(
       `${BASE_URL}/?key=${URL_KEY}&q=${this.searchQuery}&per_page=${this.per_page}&page=${this.page}&${URL}`
     );
+    const data = await response.data;
+
+    if (response.status !== 200) {
+      throw new Error(response.status);
+    }
 
     this.incrementPage();
     return data;
