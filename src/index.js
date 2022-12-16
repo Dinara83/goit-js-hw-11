@@ -5,18 +5,26 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import FetchApiService from './js/fetch-api';
 import { refs } from './js/refsHits';
 import { galleryCard } from './js/galleryCard.js';
+import LoadMoreBtn from './js/components/load-more-btn';
+
+const loadMoreBtn = new LoadMoreBtn({
+  selector: '[data-action="load-more"]',
+  hidden: true,
+});
+console.log(loadMoreBtn);
+
+const fetchApiService = new FetchApiService();
 
 refs.searchForm.addEventListener('submit', searchForm);
-refs.loadMoreBtn.addEventListener('click', clickLoadMore);
-const simpleLightBox = new SimpleLightbox('.gallery a').refresh();
-const fetchApiService = new FetchApiService();
+loadMoreBtn.refs.button.addEventListener('click', fetchCardBtn);
+// const simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+
 // const gallery = new SimpleLightbox('.gallery a', {
 //   captionDelay: 250,
 //   overlayOpacity: 0.8,
 //   closeText: 'x',
 //   scrollZoom: false,
 // });
-
 // gallery.refresh();
 
 async function searchForm(element) {
@@ -32,31 +40,28 @@ async function searchForm(element) {
       );
     }
 
+    loadMoreBtn.show();
     fetchApiService.resetPage();
-
-    const data = await fetchApiService.fetchCard();
-    console.log(data);
     clearGalleryCard();
-    renderGalleryCard(cards);
+
+    fetchCardBtn();
   } catch (error) {
     console.log(error);
   }
 }
 
-async function clickLoadMore() {
-  try {
-    fetchApiService.incrementPage();
-    await fetchApiService.fetchCard();
-    renderGalleryCard(cards);
-  } catch (error) {
-    console.log(error);
-  }
+function fetchCardBtn() {
+  loadMoreBtn.disable();
+  fetchApiService.fetchCard().then(hits => {
+    renderGalleryCard(hits);
+    loadMoreBtn.enable();
+  });
 }
 
-function renderGalleryCard(cards) {
-  //   refs.galleryList.insertAdjacentHTML('beforeend', galleryCard(hits));
-  const markup = cards.map(galleryCard).join('');
-  return refs.galleryList.insertAdjacentHTML('beforeend', markup);
+function renderGalleryCard(hits) {
+  refs.galleryList.insertAdjacentHTML('beforeend', galleryCard(hits));
+  //   const markup = hits.map(galleryCard).join('');
+  //   return refs.galleryList.insertAdjacentHTML('beforeend', markup);
 }
 
 function clearGalleryCard() {

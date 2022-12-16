@@ -7,17 +7,29 @@
     <title>Homework 11</title>
   </head>
   <body>
-    <form class="search-form js-search-form" id="search-form">
+    <form class="form-inline search-form js-search-form" id="search-form">
       <input
         type="text"
         name="searchQuery"
         autocomplete="off"
         placeholder="Search images..."
       />
-      <button type="submit">Search</button>
+      <button type="submit" class="btn">Search</button>
 
       <div class="gallery"></div>
-      <button type="button" class="load-more">Load more</button>
+
+      <button
+        type="button"
+        class="btn btn-primary button"
+        data-action="load-more"
+      >
+        <span
+          class="spinner-border spinner-border-sm spinner is-hidden"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <span class="label">Load more</span>
+      </button>
     </form>
     <script src="index.js" type="module"></script>
   </body>

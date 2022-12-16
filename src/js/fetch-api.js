@@ -11,17 +11,12 @@ export default class FetchApiService {
     this.per_page = 40;
   }
   async fetchCard() {
-    try {
-      const response = await axios.get(
-        `${BASE_URL}/?key=${URL_KEY}&q=${this.formSearchQuery}&per_page=${this.per_page}&page=${this.page}&${URL}`
-      );
-      const data = await response.data;
-      console.log(data);
-      this.incrementPage();
-      return data;
-    } catch (error) {
-      console.error(error);
-    }
+    const { data } = await axios.get(
+      `${BASE_URL}/?key=${URL_KEY}&q=${this.searchQuery}&per_page=${this.per_page}&page=${this.page}&${URL}`
+    );
+
+    this.incrementPage();
+    return data;
   }
 
   incrementPage() {
