@@ -3,18 +3,13 @@
 }
 
 body {
-	font-size: 1em;
+	font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
+		sans-serif;
 	width: 100%;
 	height: 100vh;
 	line-height: 2;
 	margin: 0;
 }
-
-/* li {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-} */
 
 a {
 	text-decoration: none;
@@ -60,12 +55,6 @@ p {
 	border-radius: 0 0 4px 0;
 	cursor: pointer;
 }
-
-/* .new-submit:hover,
-.new-submit:focus {
-	background-color: rgb(180, 180, 180);
-	transition: all 0.3s;
-} */
 
 .js-gallery-container {
 	padding: 0;
