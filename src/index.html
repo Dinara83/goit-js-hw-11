@@ -7,6 +7,7 @@
     <title>Homework 11</title>
   </head>
   <body>
+	<div class="container">
     <form class="form-inline search-form js-search-form" id="search-form">
       <input
         type="text"
@@ -14,14 +15,20 @@
         autocomplete="off"
         placeholder="Search images..."
       />
-      <button type="submit" class="new-submit">Search</button>
-
-      <div class="gallery"></div>
+      <button type="submit" class="new-submit">
+		<svg class="icon" width="40" height="40">
+		<use href="./images/symbol-defs.svg#icon-search"></use>
+	</svg></button>
+	</div>
+</form>
+<div>
+      <div class="gallery js-gallery-container"></div>
 
       <button type="button" class="btn-load" data-action="load-more">
         <span class="label">Load more</span>
       </button>
-    </form>
+	</div>
+    
     <script src="index.js" type="module"></script>
   </body>
 </html>
