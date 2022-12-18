@@ -37,6 +37,7 @@ async function searchForm(element) {
     Notiflix.Notify.failure(
       `The search string cannot be empty. Please specify your search query.`
     );
+    return;
   }
   await fetchCardsQuery();
 }
@@ -44,32 +45,42 @@ async function searchForm(element) {
 async function fetchCardsQuery() {
   // Notiflix.Loading.standard('Loading...');
   loadMoreBtn.disable();
-
   try {
     const data = await fetchApiService.fetchCards();
+
     if (!data.totalHits) {
       Notiflix.Notify.failure(
         `Sorry, there are no images matching your search query. Please try again.`
       );
-    }
-    renderGalleryCard(hits);
-    simpleLightBox.refresh();
-    fetchApiService.incrementPage();
-
-    if (data.totalHits > data.hits.length) {
+    } else {
+      renderGalleryCard(data.hits);
+      simpleLightBox.refresh();
+      fetchApiService.incrementPage();
       Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-      loadMoreBtn.enable();
     }
 
-    loadMoreBtn.hide();
+    // if (totalHits > per_page) {
+    //   Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+    //   renderGalleryCard();
+    //   renderGalleryCard();
+    //   simpleLightBox.refresh();
+    // }
+
+    if (data.totalHits === 0) {
+      Notiflix.Notify.success(
+        `We're sorry, but you've reached the end of search results.`
+      );
+      loadMoreBtn.hide();
+    }
   } catch (error) {
-    Notiflix.Notify.info(`Error`);
+    Notiflix.Notify.info(
+      `Sorry, there are no images matching your search ${fetchApiService.query}. Please try again.`
+    );
   }
 }
 
 function renderGalleryCard(hits) {
   refs.galleryList.insertAdjacentHTML('beforeend', galleryCard(hits));
-  clearGalleryCard();
 }
 
 function clearGalleryCard() {

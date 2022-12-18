@@ -1,6 +1,6 @@
-export function galleryCard({ hits }) {
-  return hits
-    .map(hit => {
+export function galleryCard(cards = []) {
+  return cards
+    .map(card => {
       const {
         largeImageURL,
         webformatURL,
@@ -9,7 +9,7 @@ export function galleryCard({ hits }) {
         views,
         comments,
         downloads,
-      } = hit;
+      } = card;
       return `<a class="gallery__link" href="${largeImageURL}">
             <div class="photo-card">
               <img class="image" src="${webformatURL}" alt="${tags}" loading="lazy" />
