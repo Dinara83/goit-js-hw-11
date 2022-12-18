@@ -47,23 +47,24 @@ async function fetchCardsQuery() {
   loadMoreBtn.disable();
   fetchApiService.incrementPage();
   try {
-    await fetchApiService.fetchCards().then(data => {
-      if (!data.totalHits) {
-        Notiflix.Notify.failure(
-          `Sorry, there are no images matching your search query. Please try again.`
-        );
-      } else {
-        renderGalleryCard(data);
-        simpleLightBox.refresh();
-        clearGalleryCard();
-        return;
-      }
+    await fetchApiService.fetchCards();
+    if (!data.totalHits) {
+      Notiflix.Notify.failure(
+        `Sorry, there are no images matching your search query. Please try again.`
+      );
+    } else {
+      renderGalleryCard(data);
+      simpleLightBox.refresh();
+      //   clearGalleryCard();
+      return;
+    }
 
-      if (data.totalHits > data.hits.length) {
-        Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-        loadMoreBtn.enable();
-      }
-    });
+    if (data.totalHits > data.hits.length) {
+      Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+      loadMoreBtn.enable();
+      return;
+    }
+
     loadMoreBtn.hide();
   } catch (error) {
     Notiflix.Notify.info(`Error`);
