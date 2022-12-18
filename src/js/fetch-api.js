@@ -15,7 +15,7 @@ export default class FetchApiService {
       `${BASE_URL}/?key=${URL_KEY}&q=${this.searchQuery}&per_page=${this.per_page}&page=${this.page}&${URL}`
     );
     const data = await response.data;
-
+    console.log(data);
     if (response.status !== 200) {
       throw new Error(response.status);
     }
