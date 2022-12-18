@@ -37,7 +37,6 @@ async function searchForm(element) {
     Notiflix.Notify.failure(
       `The search string cannot be empty. Please specify your search query.`
     );
-    clearGalleryCard();
   }
   await fetchCardsQuery();
 }
@@ -45,24 +44,21 @@ async function searchForm(element) {
 async function fetchCardsQuery() {
   // Notiflix.Loading.standard('Loading...');
   loadMoreBtn.disable();
-  fetchApiService.incrementPage();
+
   try {
-    await fetchApiService.fetchCards();
+    const data = await fetchApiService.fetchCards();
     if (!data.totalHits) {
       Notiflix.Notify.failure(
         `Sorry, there are no images matching your search query. Please try again.`
       );
-    } else {
-      renderGalleryCard(data);
-      simpleLightBox.refresh();
-      //   clearGalleryCard();
-      return;
     }
+    renderGalleryCard(hits);
+    simpleLightBox.refresh();
+    fetchApiService.incrementPage();
 
     if (data.totalHits > data.hits.length) {
       Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
       loadMoreBtn.enable();
-      return;
     }
 
     loadMoreBtn.hide();
