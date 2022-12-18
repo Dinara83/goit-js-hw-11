@@ -15,7 +15,7 @@ const loadMoreBtn = new LoadMoreBtn({
 const fetchApiService = new FetchApiService();
 
 refs.searchForm.addEventListener('submit', searchForm);
-loadMoreBtn.refs.button.addEventListener('click', fetchCards);
+loadMoreBtn.refs.button.addEventListener('click', fetchCardsQuery);
 
 const simpleLightBox = new SimpleLightbox('.gallery a', {
   captionDelay: 250,
@@ -24,42 +24,50 @@ const simpleLightBox = new SimpleLightbox('.gallery a', {
   scrollZoom: false,
 });
 
-function searchForm(element) {
+async function searchForm(element) {
   element.preventDefault();
   clearGalleryCard();
   fetchApiService.query =
     element.currentTarget.elements.searchQuery.value.trim();
   fetchApiService.resetPage();
-
+  //   Notiflix.Loading.standard('Loading...');
   loadMoreBtn.disable();
-  fetchCards();
+
   if (fetchApiService.query === '') {
     Notiflix.Notify.failure(
       `The search string cannot be empty. Please specify your search query.`
     );
+    clearGalleryCard();
   }
+  await fetchCardsQuery();
 }
 
-async function fetchCards() {
+async function fetchCardsQuery() {
+  // Notiflix.Loading.standard('Loading...');
   loadMoreBtn.disable();
   fetchApiService.incrementPage();
-  await fetchApiService.fetchCards().then(data => {
-    if (!data.totalHits) {
-      Notiflix.Notify.failure(
-        `Sorry, there are no images matching your search query. Please try again.`
-      );
-    } else {
-      renderGalleryCard(data);
-      simpleLightBox.refresh();
-    }
+  try {
+    await fetchApiService.fetchCards().then(data => {
+      if (!data.totalHits) {
+        Notiflix.Notify.failure(
+          `Sorry, there are no images matching your search query. Please try again.`
+        );
+      } else {
+        renderGalleryCard(data);
+        simpleLightBox.refresh();
+        clearGalleryCard();
+        return;
+      }
 
-    if (data.totalHits > data.total) {
-      Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-      loadMoreBtn.hide();
-    }
-  });
-
-  loadMoreBtn.enable();
+      if (data.totalHits > data.hits.length) {
+        Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+        loadMoreBtn.enable();
+      }
+    });
+    loadMoreBtn.hide();
+  } catch (error) {
+    Notiflix.Notify.info(`Error`);
+  }
 }
 
 function renderGalleryCard(hits) {
