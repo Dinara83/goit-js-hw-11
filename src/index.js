@@ -61,6 +61,7 @@ async function fetchCardsQuery() {
       fetchApiService.incrementPage();
       Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
       loadMoreBtn.enable();
+      scrollPage();
     }
 
     if (data.totalHits === 0) {
@@ -80,4 +81,15 @@ function renderGalleryCard(hits) {
 
 function clearGalleryCard() {
   refs.galleryList.innerHTML = '';
+}
+
+function scrollPage() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }
